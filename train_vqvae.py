@@ -102,6 +102,9 @@ def main(args):
     )
 
     model = VQVAE().to(device)
+    if args.pretrained!="":
+        model.load_state_dict(torch.load(args.pretrained))
+
 
     if args.distributed:
         model = nn.parallel.DistributedDataParallel(
@@ -144,6 +147,8 @@ if __name__ == "__main__":
     parser.add_argument("--lr", type=float, default=3e-4)
     parser.add_argument("--sched", type=str)
     parser.add_argument("path", type=str)
+    parser.add_argument("--pretrained",type=str,default="")
+
 
     args = parser.parse_args()
 
