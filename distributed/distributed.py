@@ -4,6 +4,7 @@ import pickle
 import torch
 from torch import distributed as dist
 from torch.utils import data
+import torch_xla.core.xla_model as xm
 
 
 LOCAL_PROCESS_GROUP = None
@@ -132,9 +133,16 @@ def reduce_dict(input_dict, average=True):
     return reduced_dict
 
 
-def data_sampler(dataset, shuffle, distributed):
-    if distributed:
+def data_sampler(dataset, shuffle, distributed, tpu=False):
+    if distributed and not tpu:
         return data.distributed.DistributedSampler(dataset, shuffle=shuffle)
+
+    if distributed and tpu:
+        return data.distributed.DistributedSampler(
+            dataset,
+            num_replicas=xm.xrt_world_size(),
+            rank=xm.get_ordinal(),
+            shuffle=shuffle)
 
     if shuffle:
         return data.RandomSampler(dataset)
