@@ -18,8 +18,8 @@ import torch_xla.debug.metrics as met
 
 
 def train(epoch, loader, model, optimizer, scheduler, device):
-    # if dist.is_primary():
-    #     loader = tqdm(loader)
+    if dist.is_primary():
+        loader = tqdm(loader)
 
     criterion = nn.MSELoss()
 
