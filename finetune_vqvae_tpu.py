@@ -14,11 +14,12 @@ from vqvae import VQVAE
 from scheduler import CycleScheduler
 import distributed as dist
 import torch_xla.core.xla_model as xm
+import torch_xla.debug.metrics as met
 
 
 def train(epoch, loader, model, optimizer, scheduler, device):
-    if dist.is_primary():
-        loader = tqdm(loader)
+    # if dist.is_primary():
+    #     loader = tqdm(loader)
 
     criterion = nn.MSELoss()
 
@@ -62,6 +63,7 @@ def train(epoch, loader, model, optimizer, scheduler, device):
                     f"lr: {lr:.5f}"
                 )
             )
+            xm.master_print(met.metrics_report())
 
             if i % 100 == 0:
                 model.eval()
