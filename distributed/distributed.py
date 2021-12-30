@@ -58,7 +58,6 @@ def get_world_size():
 
     if not dist.is_initialized():
         return 1
-
     return dist.get_world_size()
 
 
@@ -74,6 +73,7 @@ def all_reduce(tensor, op=dist.ReduceOp.SUM):
 
 
 def all_gather(data):
+
     world_size = get_world_size()
 
     if world_size == 1:

@@ -84,6 +84,7 @@ def train(epoch, loader, model, optimizer, scheduler, device):
 
 def main(args):
     device = xm.xla_device()
+    print(device)
 
     args.distributed = xm.xrt_world_size() > 1
     print("Distributed: " + str(args.distributed))
